@@ -1,0 +1,55 @@
+
+
+<But@Button>:
+    font_size: 25
+
+<Qbut@Button>:
+    font_size: 25
+    size_hint: None, 1
+#    text_size: (100, 25)
+    halign: 'center'
+    valign: 'middle'
+    on_press: self.start()
+    
+    
+<StreamRow@Boxlayout>:
+    id: streambox
+    orientation: 'horizontal'
+    height: 50
+    size_hint: 1, None
+    But:
+        id: streamer
+        #text_size: (100, 50)
+        halign: 'left'
+        valign: 'middle'
+        text: ""
+        #width: 100
+
+
+    
+<Panel@Boxlayout>:
+    id: panel
+    orientation: 'horizontal'
+    height: 80
+    size_hint: 1, 0.08
+    But:        
+        text: 'refresh'
+        on_press: root.refresh()
+    TextInput:
+        id: ti
+        text: ''
+    But:
+        text: 'add'    
+        on_press: root.add_new()
+
+
+<Cont@Stacklayout>:
+    orientation: 'lr-tb'
+    id: cont
+    
+    Panel
+        
+       
+
+
+Cont
