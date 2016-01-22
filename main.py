@@ -14,7 +14,7 @@ import livestreamer
 import os
 import subprocess
 import sys
-
+import threading
 
 player = ""
 if(len(sys.argv) == 2):
@@ -57,7 +57,6 @@ class StreamRow(BoxLayout):
     state = ""
     qualities = []
     cq = ""
-
     def rem(self):
         self.parent.rem(self)
     def refresh(self):
@@ -70,6 +69,7 @@ class StreamRow(BoxLayout):
         y = Qbut(width = 50)
         y.btype = 1
         y.text = "del"
+        self.link = "www.twitch.tv/" + self.name[:-1]
         self.add_widget(x)
         self.add_widget(y)
         links = livestreamer.streams(self.link)
@@ -86,10 +86,9 @@ class StreamRow(BoxLayout):
             self.online = False
             self.state = "offline"
             self.qualities = []
-        
+
         x.text = self.name + " " + self.state
-
-
+        
         
         
 class Cont(StackLayout):
@@ -104,9 +103,14 @@ class Cont(StackLayout):
             f = open(path, 'a+')
             f.close()
         for a in self.names:
-           self.add_row(a)
+            self.add_row(a)
 
-
+    def refresh(self):
+        for w in self.walk():
+            if(isinstance(w, StreamRow)):
+                threading.Thread(target=w.refresh)
+                #w.refresh()
+        
     def read(self):
         f = open(self.path)
         l = f.readline()
@@ -136,15 +140,7 @@ class Cont(StackLayout):
         b.size_hint = (1, 0.1)
         b.link = link
         b.name = name
-#        qs = livestreamer.streams(link)
-#        if qs:
-#            b.state = "online"
-#            b.online = True
-#            b.qualities = qs.keys()
-#        else:
-#            b.state = "offline"
-#            b.online = False
-#        b.text = name + " " + b.state
+        #threading.Thread(target=b.refresh)
         b.refresh()
         self.add_widget(b)
 
@@ -155,16 +151,16 @@ class Cont(StackLayout):
 class Panel(BoxLayout):
     def __init__(self, **kwargs):
         super(Panel, self).__init__(**kwargs)
-        
+
     def add_new(self):
         if(self.ids.ti.text != ""):
             self.parent.add_row(self.ids.ti.text)
             self.parent.add_name(self.ids.ti.text)
             self.ids.ti.text = ""
         
-        
+
     def refresh(self):
-        1
+        self.parent.refresh()
 
     
 
